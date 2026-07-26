@@ -10,7 +10,7 @@
 
     async function initSearch() {
         try {
-            const response = await fetch('{{ "/index.json" | relURL }}');
+            const response = await fetch('{{ "index.json" | relURL }}');
             const data = await response.json();
             documents = data;
 

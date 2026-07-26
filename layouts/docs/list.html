@@ -24,7 +24,7 @@
     <article class="min-w-0">
       {{ if not (.Params.current | default true) }}
       <div class="mb-6 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 text-sm text-amber-800 dark:text-amber-300">
-        You're viewing an archived version of these docs. <a href="{{ "/docs/" | relURL }}" class="underline font-medium">Go to the current version &rarr;</a>
+        You're viewing an archived version of these docs. <a href="{{ "docs/" | relURL }}" class="underline font-medium">Go to the current version &rarr;</a>
       </div>
       {{ end }}
 

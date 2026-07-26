@@ -67,7 +67,7 @@ theme = "nimbus"
   author = "Nimbus"
   
   # SEO and Social
-  images = ["/images/devops-og-image.png"]
+  images = ["images/devops-og-image.png"]
   twitter_card = "summary_large_image"
   
   # Features
@@ -79,18 +79,18 @@ theme = "nimbus"
 
   # "Edit this page" links — base repo URL + branch; the page's file path is
   # appended automatically. Update this to your real repo before deploying.
-  editURL = "https://github.com/k-s-pavan-kumar/hugo-nimbus/edit/main/exampleSite/"
+  editURL = "https://github.com/your-org/hugo-theme-nimbus/edit/main/exampleSite/"
 
   # Docs version switcher (shown in the docs sidebar). The current version's
   # `url` should point at the live docs section; others can point anywhere,
   # including an external archived deployment.
   [[params.docsVersions]]
     name = "v2.0 (current)"
-    url = "/docs/"
+    url = "docs/"
     current = true
   [[params.docsVersions]]
     name = "v1.0 (archived)"
-    url = "/docs-v1/"
+    url = "docs-v1/"
     current = false
 
   # Chroma syntax-highlighting stylesheet (assets/css/syntax-<style>.css)
@@ -99,8 +99,8 @@ theme = "nimbus"
   
   # Social links
   [params.social]
-    twitter = "https://twitter.com/"
-    github = "https://github.com/k-s-pavan-kumar/hugo-nimbus"
+    twitter = "https://x.com/kspavankumar24"
+    github = "https://github.com/k-s-pavan-kumar"
     linkedin = "https://www.linkedin.com/in/kspavankumar/"
     
   # Analytics (uncomment and configure as needed)

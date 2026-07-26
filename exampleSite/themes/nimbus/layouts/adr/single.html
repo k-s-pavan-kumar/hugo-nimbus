@@ -1,9 +1,9 @@
 {{ define "main" }}
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
   <nav class="text-sm text-gray-500 dark:text-gray-400 mb-6">
-    <a href="{{ "/" | relURL }}" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a>
+    <a href="{{ .Site.Home.RelPermalink }}" class="hover:text-primary-600 dark:hover:text-primary-400">Home</a>
     <span class="mx-1">/</span>
-    <a href="{{ "/adr/" | relURL }}" class="hover:text-primary-600 dark:hover:text-primary-400">ADRs</a>
+    <a href="{{ "adr/" | relURL }}" class="hover:text-primary-600 dark:hover:text-primary-400">ADRs</a>
     <span class="mx-1">/</span>
     <span class="text-gray-700 dark:text-gray-300">{{ .Title }}</span>
   </nav>

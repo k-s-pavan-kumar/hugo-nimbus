@@ -35,7 +35,7 @@
         {{ if .Params.tags }}
         <div class="flex flex-wrap gap-2 mb-3">
           {{ range .Params.tags }}
-          <a href="{{ "/tags/" | relURL }}{{ . | urlize }}/" class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
+          <a href="{{ "tags/" | relURL }}{{ . | urlize }}/" class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
             {{ . }}
           </a>
           {{ end }}
