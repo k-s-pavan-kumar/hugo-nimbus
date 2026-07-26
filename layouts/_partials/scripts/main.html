@@ -1,0 +1,8 @@
+{{ $main := resources.Get "js/main.js" }}
+{{ if hugo.IsProduction }}
+  {{ $main = $main | resources.Minify | resources.Fingerprint }}
+{{ end }}
+<script src="{{ $main.RelPermalink }}" {{ if hugo.IsProduction }}integrity="{{ $main.Data.Integrity }}"{{ end }}></script>
+
+<!-- Copy-to-clipboard buttons on code blocks are added by main.js
+     (vanilla JS, no external library — see the copyCodeButton block there) -->

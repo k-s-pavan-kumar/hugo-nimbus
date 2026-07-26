@@ -1,0 +1,11 @@
+{{ $title := .Get "title" }}
+<div class="my-6 rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-x-auto">
+  {{ with $title }}
+  <div class="px-4 py-2 border-b border-gray-200 dark:border-neutral-800 text-sm font-medium text-gray-700 dark:text-gray-300">
+    {{ . }}
+  </div>
+  {{ end }}
+  <div class="mermaid p-4">
+{{ .Inner | safeHTML }}
+  </div>
+</div>

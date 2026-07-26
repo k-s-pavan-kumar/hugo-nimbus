@@ -1,0 +1,235 @@
+/* ---------------------------------------------------------------
+   Inter (self-hosted, latin subset, weights 400/500/600/700)
+   No custom font was set anywhere before this — every page rendered
+   in the raw OS system font, which reads as generic/unpolished next
+   to sites like Hextra/Vercel/Linear that all use a deliberate font.
+------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-700-normal.woff2') format('woff2');
+}
+
+body {
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Tighter letter-spacing on large headings — a small detail that reads as
+   "designed" rather than "default browser bold text". */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+/* ---------------------------------------------------------------
+   Keyboard affordances
+------------------------------------------------------------------ */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Visible focus ring for keyboard users navigating with Tab */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgb(37 99 235);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* ---------------------------------------------------------------
+   Note / warning / tip / success / error callout boxes
+   (used by the `note` shortcode — layouts/shortcodes/note.html)
+------------------------------------------------------------------ */
+.alert {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+.alert-info {
+  background-color: rgb(239 246 255);
+  border-color: rgb(191 219 254);
+  color: rgb(30 64 175);
+}
+.dark .alert-info {
+  background-color: rgb(30 58 138 / 0.2);
+  border-color: rgb(30 64 175);
+  color: rgb(147 197 253);
+}
+.alert-warning {
+  background-color: rgb(255 251 235);
+  border-color: rgb(253 230 138);
+  color: rgb(146 64 14);
+}
+.dark .alert-warning {
+  background-color: rgb(120 53 15 / 0.2);
+  border-color: rgb(146 64 14);
+  color: rgb(252 211 77);
+}
+.alert-success {
+  background-color: rgb(240 253 244);
+  border-color: rgb(187 247 208);
+  color: rgb(22 101 52);
+}
+.dark .alert-success {
+  background-color: rgb(20 83 45 / 0.2);
+  border-color: rgb(22 101 52);
+  color: rgb(134 239 172);
+}
+.alert-error {
+  background-color: rgb(254 242 242);
+  border-color: rgb(254 202 202);
+  color: rgb(153 27 27);
+}
+.dark .alert-error {
+  background-color: rgb(127 29 29 / 0.2);
+  border-color: rgb(153 27 27);
+  color: rgb(252 165 165);
+}
+
+/* ---------------------------------------------------------------
+   Diff blocks (```diff fenced code, or the `diff` shortcode)
+   Chroma's github/dracula styles set text color for +/- lines;
+   add full-row backgrounds so it reads like a real diff view.
+------------------------------------------------------------------ */
+.chroma .gd,
+.chroma .gi {
+  display: block;
+  margin: 0 -1.25rem;
+  padding: 0 1.25rem;
+}
+.dark .chroma .gd {
+  background-color: rgba(248, 81, 73, 0.15);
+}
+.dark .chroma .gi {
+  background-color: rgba(63, 185, 80, 0.15);
+}
+
+/* ---------------------------------------------------------------
+   Code blocks (Chroma outputs raw <div class="highlight"><pre>...)
+   The generated syntax-*.css only styles token colors; add the
+   chrome (radius, padding, horizontal scroll, header spacing).
+------------------------------------------------------------------ */
+.highlight .chroma,
+.highlight .chroma code {
+  /* Tailwind Typography's prose plugin sets a light gray text color on
+     <pre><code>, assuming a dark code-block background. Our Chroma theme
+     is light, so plain/unrecognized text (anything Chroma doesn't tag
+     with a specific token class) was rendering nearly invisible —
+     light gray on light gray. Override with the correct default per mode. */
+  color: #1f2328 !important;
+}
+.dark .highlight .chroma,
+.dark .highlight .chroma code {
+  color: #e6edf3 !important;
+}
+.highlight {
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  border: 1px solid rgb(229 231 235);
+}
+.dark .highlight {
+  border-color: rgb(64 64 64);
+}
+.highlight pre {
+  padding: 1rem 1.25rem;
+  margin: 0;
+}
+.highlight .chroma {
+  border-radius: 0.5rem;
+}
+
+.copy-code-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(209 213 219);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+.highlight:hover .copy-code-btn {
+  opacity: 1;
+}
+.copy-code-btn:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+.copy-code-btn.is-copied {
+  background-color: rgb(22 163 74);
+  border-color: rgb(22 163 74);
+  color: white;
+  opacity: 1;
+}
+
+/* Inline `code` outside of fenced blocks (Tailwind Typography already
+   styles this reasonably, this just aligns the look with the code
+   blocks above for a more consistent, "developer" feel). */
+.prose :not(pre) > code {
+  background-color: rgb(243 244 246);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
+  font-size: 0.85em;
+}
+.dark .prose :not(pre) > code {
+  background-color: rgb(23 23 23);
+}
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
+}
+
+/* Table of contents active/hover affordance */
+.toc a {
+  display: block;
+  padding: 0.125rem 0;
+  color: rgb(75 85 99);
+}
+.dark .toc a {
+  color: rgb(156 163 175);
+}
+.toc a:hover {
+  color: rgb(37 99 235);
+}
+.dark .toc a:hover {
+  color: rgb(96 165 250);
+}
+.toc ul {
+  list-style: none;
+  padding-left: 0.75rem;
+}
+.toc > ul {
+  padding-left: 0;
+}

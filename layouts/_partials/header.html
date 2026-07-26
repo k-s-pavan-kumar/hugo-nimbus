@@ -1,0 +1,68 @@
+<header class="sticky top-0 z-40 bg-white/80 dark:bg-neutral-950/80 backdrop-blur border-b border-gray-200 dark:border-neutral-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-6">
+
+    <!-- Left: Logo / Site Title -->
+    <a href="{{ "/" | relURL }}" class="flex items-center gap-2 shrink-0">
+      <svg class="h-7 w-7" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="100" height="100" rx="24" fill="#2563eb"/>
+        <path d="M28 62 L50 34 L72 62 M50 34 L50 82" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="text-lg font-semibold text-gray-900 dark:text-white">{{ .Site.Title }}</span>
+    </a>
+
+    <!-- Center: Desktop nav -->
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      {{ $currentPath := .RelPermalink }}
+      {{ range .Site.Menus.main }}
+      {{ $isActive := or (eq $currentPath .URL) (and (ne .URL "/") (hasPrefix $currentPath .URL)) }}
+      <a href="{{ .URL | relURL }}"
+         class="px-3 py-2 rounded-md font-medium transition-colors {{ if $isActive }}text-primary-700 dark:text-primary-400{{ else }}text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white{{ end }}">
+        {{ .Name }}
+      </a>
+      {{ end }}
+    </nav>
+
+    <!-- Right: Search + Theme toggle -->
+    <div class="flex items-center gap-3">
+
+      {{ if .Site.Params.search }}
+      <div class="relative">
+        <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+        </svg>
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search docs..."
+          autocomplete="off"
+          class="w-24 sm:w-56 lg:w-72 pl-9 pr-3 sm:pr-14 py-1.5 rounded-lg border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        >
+        <kbd class="absolute right-2 top-1/2 -translate-y-1/2 hidden lg:inline-flex items-center gap-0.5 rounded border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400">
+          ⌘K
+        </kbd>
+        <div id="search-results" class="absolute right-0 mt-2 w-72 sm:w-80 max-h-96 overflow-y-auto rounded-lg shadow-lg bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 empty:hidden z-50"></div>
+      </div>
+      {{ end }}
+
+      <button type="button" data-theme-toggle aria-label="Toggle color theme"
+              class="h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+        <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+      </button>
+
+      <button id="mobile-menu-button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle menu"
+              class="md:hidden h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-800">
+        ☰
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 dark:border-neutral-800 px-4 py-3 space-y-1">
+    {{ range .Site.Menus.main }}
+    <a href="{{ .URL | relURL }}" class="block px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-neutral-800 font-medium">
+      {{ .Name }}
+    </a>
+    {{ end }}
+  </div>
+</header>

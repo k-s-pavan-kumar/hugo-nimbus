@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ .Title }}</h1>
+  <div class="prose dark:prose-invert max-w-none mb-8">
+    {{ .Content }}
+  </div>
+
+  {{ $adrs := .Pages.ByDate.Reverse }}
+  {{ if $adrs }}
+  <div class="border-l-2 border-gray-200 dark:border-neutral-800 ml-3">
+    {{ range $adrs }}
+    <div class="relative pl-8 pb-8 last:pb-0">
+      <div class="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full bg-primary-500 border-2 border-white dark:border-neutral-950"></div>
+      <a href="{{ .RelPermalink }}" class="block rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 hover:shadow-md hover:border-primary-300 dark:hover:border-primary-700 transition-all">
+        <div class="flex items-center justify-between gap-4 mb-2">
+          <span class="text-xs font-mono text-gray-400">
+            {{ with .Params.number }}ADR-{{ printf "%04d" . }}{{ else }}{{ .Date.Format "2006-01-02" }}{{ end }}
+          </span>
+          {{ partial "adr-status-badge.html" .Params.status }}
+        </div>
+        <h3 class="font-semibold text-gray-900 dark:text-white">{{ .LinkTitle }}</h3>
+        {{ with .Params.deciders }}
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Deciders: {{ delimit . ", " }}</p>
+        {{ end }}
+      </a>
+    </div>
+    {{ end }}
+  </div>
+  {{ else }}
+  <p class="text-gray-600 dark:text-gray-400">No decision records yet.</p>
+  {{ end }}
+</div>
+{{ end }}

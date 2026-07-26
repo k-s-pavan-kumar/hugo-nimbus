@@ -1,0 +1,17 @@
+name = "Nimbus"
+license = "MIT"
+licenselink = "https://github.com/your-org/hugo-theme-nimbus/blob/main/LICENSE"
+description = "A Tailwind CSS theme for DevOps knowledge hubs: blog posts, sidebar-navigation docs, Architecture Decision Records, native OpenAPI spec rendering, dark mode, client-side search, and terminal/diff/callout shortcodes for technical writing."
+homepage = "https://github.com/your-org/hugo-theme-nimbus"
+tags = ["devops", "documentation", "blog", "openapi", "api-docs", "adr", "dark-mode", "tailwind", "search", "responsive"]
+features = ["dark-mode", "search", "syntax-highlighting", "mermaid-diagrams", "sidebar-docs-nav", "openapi-rendering", "adr-tracking", "diff-rendering", "table-of-contents", "rss", "sitemap", "seo"]
+min_version = "0.146.0"
+
+[author]
+  name = "Nimbus contributors"
+  homepage = "https://github.com/your-org/hugo-theme-nimbus"
+
+[original]
+  name = "Nimbus"
+  homepage = "https://github.com/your-org/hugo-theme-nimbus"
+  repo = "https://github.com/your-org/hugo-theme-nimbus"

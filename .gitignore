@@ -1,0 +1,21 @@
+# Hugo build output & caches
+public/
+resources/
+.hugo_build.lock
+# Note: assets/css/tailwind.built.css is intentionally committed — it's the
+# pre-compiled CSS output, not ignored. Regenerate it with `npm run build-css`
+# after changing tailwind.config.js or any *.css source file.
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS junk
+.DS_Store
+._.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

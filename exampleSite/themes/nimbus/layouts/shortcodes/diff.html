@@ -1,0 +1,15 @@
+{{ $title := .Get "title" }}
+
+<div class="my-6 rounded-lg border border-gray-200 dark:border-neutral-800 overflow-hidden">
+  {{ with $title }}
+  <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800">
+    <svg class="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+    <span class="text-xs font-mono text-gray-600 dark:text-gray-400">{{ . }}</span>
+  </div>
+  {{ end }}
+  <div class="diff-block [&_.highlight]:my-0 [&_.highlight]:rounded-none [&_.highlight]:border-0">
+    {{ .Inner | markdownify }}
+  </div>
+</div>

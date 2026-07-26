@@ -1,0 +1,28 @@
+{{ $command := .Get "command" | default "bash" }}
+{{ $user := .Get "user" | default "user" }}
+{{ $host := .Get "host" | default "localhost" }}
+{{ $path := .Get "path" | default "~" }}
+
+<div class="terminal-container bg-gray-900 rounded-lg overflow-hidden shadow-lg my-6">
+  <!-- Terminal header -->
+  <div class="terminal-header bg-gray-800 px-4 py-2 flex items-center space-x-2">
+    <div class="flex space-x-2">
+      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+      <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+    </div>
+    <div class="flex-1 text-center">
+      <span class="text-gray-400 text-sm font-mono">{{ $command }}</span>
+    </div>
+  </div>
+  
+  <!-- Terminal content -->
+  <div class="terminal-content p-4 font-mono text-sm">
+    <div class="terminal-prompt text-green-400 mb-2">
+      <span class="text-blue-400">{{ $user }}@{{ $host }}</span>:<span class="text-purple-400">{{ $path }}</span>$ 
+    </div>
+    <div class="terminal-output text-gray-100">
+      {{ .Inner | markdownify }}
+    </div>
+  </div>
+</div>

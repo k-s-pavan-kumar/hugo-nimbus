@@ -1,0 +1,103 @@
+{{ $srcPath := .Get "src" }}
+{{ $resource := .Page.Resources.GetMatch $srcPath }}
+{{ if not $resource }}
+  {{ errorf "openapi shortcode: could not find %q as a page resource on %q. Place the spec file alongside the page's index.md (page bundle) and reference it by filename." $srcPath .Page.File.Filename }}
+{{ end }}
+
+{{ $spec := "" }}
+{{ if or (strings.HasSuffix $srcPath ".yaml") (strings.HasSuffix $srcPath ".yml") }}
+  {{ $spec = $resource.Content | transform.Unmarshal }}
+{{ else }}
+  {{ $spec = $resource.Content | transform.Unmarshal }}
+{{ end }}
+
+{{ $methodColors := dict
+  "get"    "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+  "post"   "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+  "put"    "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+  "patch"  "bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+  "delete" "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+}}
+
+<div class="openapi-block my-8 border border-gray-200 dark:border-neutral-800 rounded-lg overflow-hidden">
+
+  {{ with $spec.info }}
+  <div class="px-5 py-4 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800">
+    <div class="flex items-center gap-3">
+      <h3 class="font-semibold text-gray-900 dark:text-white">{{ .title }}</h3>
+      {{ with .version }}<span class="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-200 dark:bg-neutral-700 text-gray-600 dark:text-gray-300">v{{ . }}</span>{{ end }}
+    </div>
+    {{ with .description }}<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ . }}</p>{{ end }}
+    {{ with $spec.servers }}
+    <p class="text-xs font-mono text-gray-500 dark:text-gray-500 mt-2">Base URL: {{ (index . 0).url }}</p>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  <div class="divide-y divide-gray-200 dark:divide-neutral-800">
+    {{ range $path, $operations := $spec.paths }}
+      {{ range $method, $op := $operations }}
+      {{ $badgeClass := index $methodColors $method | default "bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-gray-400" }}
+      <details class="group">
+        <summary class="flex items-center gap-3 px-5 py-3 cursor-pointer list-none hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors">
+          <span class="shrink-0 w-16 text-center text-xs font-bold uppercase px-2 py-1 rounded {{ $badgeClass }}">{{ $method }}</span>
+          <span class="font-mono text-sm text-gray-800 dark:text-gray-200">{{ $path }}</span>
+          {{ with $op.summary }}<span class="text-sm text-gray-500 dark:text-gray-400 ml-auto hidden sm:inline">{{ . }}</span>{{ end }}
+          <svg class="h-4 w-4 text-gray-400 shrink-0 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </summary>
+
+        <div class="px-5 pb-5 pt-1 border-t border-gray-100 dark:border-neutral-900">
+          {{ with $op.description }}<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ . }}</p>{{ end }}
+
+          {{ with $op.parameters }}
+          <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-1">Parameters</h4>
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-neutral-800 text-left text-gray-500 dark:text-gray-400">
+                <th class="py-1.5 pr-4 font-medium">Name</th>
+                <th class="py-1.5 pr-4 font-medium">In</th>
+                <th class="py-1.5 pr-4 font-medium">Type</th>
+                <th class="py-1.5 font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range . }}
+              <tr class="border-b border-gray-100 dark:border-neutral-900">
+                <td class="py-1.5 pr-4 font-mono text-gray-900 dark:text-gray-100">
+                  {{ .name }}{{ if .required }}<span class="text-red-500">*</span>{{ end }}
+                </td>
+                <td class="py-1.5 pr-4 text-gray-500 dark:text-gray-400">{{ .in }}</td>
+                <td class="py-1.5 pr-4 font-mono text-primary-600 dark:text-primary-400">{{ .schema.type }}</td>
+                <td class="py-1.5 text-gray-600 dark:text-gray-400">{{ .description }}</td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+          {{ end }}
+
+          {{ with $op.requestBody }}
+          <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-1">Request Body</h4>
+          {{ range $contentType, $content := .content }}
+          <p class="text-xs font-mono text-gray-400 mb-1">{{ $contentType }}</p>
+          {{ partial "openapi-schema-table.html" (dict "schema" $content.schema "spec" $spec) }}
+          {{ end }}
+          {{ end }}
+
+          {{ with $op.responses }}
+          <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-1">Responses</h4>
+          {{ range $code, $resp := . }}
+          <div class="mb-2">
+            <span class="font-mono text-sm {{ if hasPrefix $code "2" }}text-green-600 dark:text-green-400{{ else if hasPrefix $code "4" }}text-amber-600 dark:text-amber-400{{ else if hasPrefix $code "5" }}text-red-600 dark:text-red-400{{ else }}text-gray-500{{ end }}">{{ $code }}</span>
+            <span class="text-sm text-gray-600 dark:text-gray-400">— {{ $resp.description }}</span>
+            {{ range $contentType, $content := $resp.content }}
+            {{ partial "openapi-schema-table.html" (dict "schema" $content.schema "spec" $spec) }}
+            {{ end }}
+          </div>
+          {{ end }}
+          {{ end }}
+        </div>
+      </details>
+      {{ end }}
+    {{ end }}
+  </div>
+</div>

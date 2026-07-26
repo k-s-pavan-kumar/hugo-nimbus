@@ -1,0 +1,22 @@
+{{ $versions := .Site.Params.docsVersions }}
+{{ if gt (len $versions) 1 }}
+{{ $currentURL := .CurrentSection.RelPermalink }}
+{{ $activeName := "" }}
+{{ range $versions }}{{ if eq (.url | relURL) $currentURL }}{{ $activeName = .name }}{{ end }}{{ end }}
+
+<div class="relative mb-4">
+  <details class="group">
+    <summary class="flex items-center justify-between px-3 py-1.5 rounded-md border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer list-none">
+      <span>{{ $activeName | default "Select version" }}</span>
+      <svg class="h-4 w-4 text-gray-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </summary>
+    <div class="absolute z-10 mt-1 w-full rounded-md border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg py-1">
+      {{ range $versions }}
+      <a href="{{ .url | relURL }}" class="block px-3 py-1.5 text-sm {{ if eq .name $activeName }}text-primary-700 dark:text-primary-400 font-medium{{ else }}text-gray-600 dark:text-gray-300{{ end }} hover:bg-gray-50 dark:hover:bg-neutral-800">
+        {{ .name }}
+      </a>
+      {{ end }}
+    </div>
+  </details>
+</div>
+{{ end }}

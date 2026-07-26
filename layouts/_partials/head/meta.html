@@ -1,0 +1,30 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
+
+<!-- Author -->
+{{ if .Params.author }}
+<meta name="author" content="{{ .Params.author }}">
+{{ else if .Site.Params.author }}
+<meta name="author" content="{{ .Site.Params.author }}">
+{{ end }}
+
+<!-- Keywords -->
+{{ if .Params.tags }}
+<meta name="keywords" content="{{ delimit .Params.tags ", " }}">
+{{ end }}
+
+<!-- RSS -->
+{{ with .OutputFormats.Get "rss" }}
+<link href="{{ .Permalink }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}">
+<link href="{{ .Permalink }}" rel="feed" type="application/rss+xml" title="{{ $.Site.Title }}">
+{{ end }}
+
+<!-- Sitemap -->
+<link rel="sitemap" type="application/xml" href="{{ "/sitemap.xml" | relURL }}">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#2563eb">
+<meta name="msapplication-TileColor" content="#2563eb">

@@ -1,0 +1,54 @@
+{{ define "main" }}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ .Title }}</h1>
+  {{ with .Content }}
+  <div class="prose dark:prose-invert max-w-none mb-10">
+    {{ . }}
+  </div>
+  {{ end }}
+
+  {{ $pages := .Pages.ByDate.Reverse }}
+  {{ if $pages }}
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {{ range $pages }}
+    <article class="flex flex-col rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+      {{ if .Params.featured_image }}
+      <a href="{{ .RelPermalink }}">
+        <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" class="w-full h-40 object-cover">
+      </a>
+      {{ end }}
+      <div class="flex flex-col flex-grow p-6">
+        {{ if .Params.tags }}
+        <div class="flex flex-wrap gap-2 mb-3">
+          {{ range .Params.tags }}
+          <a href="{{ "/tags/" | relURL }}{{ . | urlize }}/" class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+            {{ . }}
+          </a>
+          {{ end }}
+        </div>
+        {{ end }}
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <a href="{{ .RelPermalink }}" class="hover:text-primary-600 dark:hover:text-primary-400">
+            {{ .LinkTitle }}
+          </a>
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 flex-grow">
+          {{ .Summary | plainify | truncate 140 }}
+        </p>
+        <div class="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-500">
+          {{ if not .Date.IsZero }}
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          {{ end }}
+          <a href="{{ .RelPermalink }}" class="font-medium text-primary-600 dark:text-primary-400 hover:underline">
+            Read more &rarr;
+          </a>
+        </div>
+      </div>
+    </article>
+    {{ end }}
+  </div>
+  {{ else }}
+  <p class="text-gray-600 dark:text-gray-400">No posts yet.</p>
+  {{ end }}
+</div>
+{{ end }}

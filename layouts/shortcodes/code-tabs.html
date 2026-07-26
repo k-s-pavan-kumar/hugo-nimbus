@@ -1,0 +1,59 @@
+{{ $tabsRaw := .Get "tabs" }}
+{{ $labels := split $tabsRaw "," }}
+{{ $id := printf "code-tabs-%d" .Ordinal }}
+
+<div id="{{ $id }}" class="code-tabs my-6 rounded-lg border border-gray-200 dark:border-neutral-800 overflow-hidden">
+  <div class="code-tabs-bar flex gap-1 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 px-2 pt-2">
+    {{ range $i, $label := $labels }}
+    <button type="button"
+            class="code-tabs-btn px-3 py-1.5 text-xs font-medium rounded-t-md border border-b-0 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 {{ if eq $i 0 }}is-active{{ end }}"
+            data-index="{{ $i }}">
+      {{ trim $label " " }}
+    </button>
+    {{ end }}
+  </div>
+  <div class="code-tabs-panels">
+    {{ .Inner | markdownify }}
+  </div>
+</div>
+
+<style>
+  #{{ $id }} .code-tabs-btn.is-active {
+    background: white;
+    border-color: rgb(229 231 235);
+    color: rgb(17 24 39);
+  }
+  .dark #{{ $id }} .code-tabs-btn.is-active {
+    background: rgb(31 41 55);
+    border-color: rgb(55 65 81);
+    color: white;
+  }
+  #{{ $id }} .code-tabs-panels > .highlight {
+    display: none;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+  #{{ $id }} .code-tabs-panels > .highlight.is-active {
+    display: block;
+  }
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById("{{ $id }}");
+  if (!root) return;
+  var buttons = root.querySelectorAll(".code-tabs-btn");
+  var panels = root.querySelectorAll(".code-tabs-panels > .highlight");
+  if (panels.length) panels[0].classList.add("is-active");
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var idx = parseInt(btn.getAttribute("data-index"), 10);
+      buttons.forEach(function (b) { b.classList.remove("is-active"); });
+      panels.forEach(function (p) { p.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      if (panels[idx]) panels[idx].classList.add("is-active");
+    });
+  });
+})();
+</script>

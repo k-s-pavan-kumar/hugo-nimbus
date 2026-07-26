@@ -1,0 +1,231 @@
+{{ define "main" }}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <li><a href="{{ "/" | relURL }}" class="hover:text-gray-700 dark:hover:text-gray-300">Home</a></li>
+            <li class="flex items-center">
+                <svg class="mx-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{{ "/blog/" | relURL }}" class="hover:text-gray-700 dark:hover:text-gray-300">Blog</a>
+            </li>
+            <li class="flex items-center">
+                <svg class="mx-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-900 dark:text-gray-100">{{ .Title }}</span>
+            </li>
+        </ol>
+    </nav>
+
+    <article>
+        <!-- Featured Image -->
+        {{ if .Params.featured_image }}
+        <div class="mb-8">
+            <img src="{{ .Params.featured_image | relURL }}" 
+                 alt="{{ .Title }}" 
+                 class="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg">
+        </div>
+        {{ end }}
+
+        <!-- Article Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                {{ .Title }}
+            </h1>
+            
+            {{ if .Description }}
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">
+                {{ .Description }}
+            </p>
+            {{ end }}
+            
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <!-- Author -->
+                {{ if .Params.author }}
+                <div class="flex items-center">
+                    {{ if .Params.author_image }}
+                    <img class="h-8 w-8 rounded-full mr-2" src="{{ .Params.author_image | relURL }}" alt="{{ .Params.author }}">
+                    {{ else }}
+                    <div class="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center mr-2">
+                        <span class="text-white text-xs font-medium">{{ substr .Params.author 0 1 | upper }}</span>
+                    </div>
+                    {{ end }}
+                    <span>{{ .Params.author }}</span>
+                </div>
+                {{ end }}
+                
+                <!-- Date -->
+                <div class="flex items-center">
+                    <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+                </div>
+                
+                <!-- Reading Time -->
+                {{ if .ReadingTime }}
+                <div class="flex items-center">
+                    <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ .ReadingTime }} min read</span>
+                </div>
+                {{ end }}
+                
+                <!-- Categories -->
+                {{ if .Params.categories }}
+                <div class="flex items-center">
+                    <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    <div class="flex flex-wrap gap-1">
+                        {{ range .Params.categories }}
+                        <a href="{{ "/categories/" | relURL }}{{ . | urlize }}" 
+                           class="bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 px-2 py-1 rounded text-xs font-medium hover:bg-primary-200 dark:hover:bg-primary-900/50">
+                            {{ . }}
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </header>
+
+        <!-- Table of Contents (if enabled and content is long enough) -->
+        {{ if and .Site.Params.toc (gt .WordCount 400) }}
+        <div class="lg:hidden bg-gray-50 dark:bg-neutral-900 rounded-lg p-4 mb-8">
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Table of Contents</h4>
+            <nav class="toc text-sm">
+                {{ .TableOfContents }}
+            </nav>
+        </div>
+        {{ end }}
+
+        <!-- Article Content -->
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+            {{ .Content }}
+        </div>
+
+        <!-- Tags -->
+        {{ if .Params.tags }}
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-neutral-800">
+            <div class="flex items-center flex-wrap gap-2">
+                <span class="text-sm font-medium text-gray-900 dark:text-white">Tags:</span>
+                {{ range .Params.tags }}
+                <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" 
+                   class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    #{{ . }}
+                </a>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+
+        <!-- Author Bio -->
+        {{ if .Params.author }}
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-neutral-800">
+            <div class="flex items-start space-x-4">
+                {{ if .Params.author_image }}
+                <img class="h-16 w-16 rounded-full flex-shrink-0" src="{{ .Params.author_image | relURL }}" alt="{{ .Params.author }}">
+                {{ else }}
+                <div class="h-16 w-16 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-xl font-medium">{{ substr .Params.author 0 1 | upper }}</span>
+                </div>
+                {{ end }}
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ .Params.author }}</h4>
+                    {{ if .Params.author_bio }}
+                    <p class="text-gray-600 dark:text-gray-400 mb-2">{{ .Params.author_bio }}</p>
+                    {{ end }}
+                    {{ if .Params.author_social }}
+                    <div class="flex space-x-2">
+                        {{ range .Params.author_social }}
+                        <a href="{{ .url }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <span class="sr-only">{{ .platform }}</span>
+                            {{ .platform }}
+                        </a>
+                        {{ end }}
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+        {{ end }}
+
+        <!-- Social Share -->
+        {{ partial "social-share.html" . }}
+        {{ partial "page-git-meta.html" . }}
+
+        <!-- Navigation -->
+        <nav class="mt-12 pt-8 border-t border-gray-200 dark:border-neutral-800">
+            <div class="flex justify-between">
+                {{ if .PrevInSection }}
+                <a href="{{ .PrevInSection.RelPermalink }}" class="flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <div class="text-left">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Previous Post</div>
+                        <div class="font-medium">{{ .PrevInSection.Title }}</div>
+                    </div>
+                </a>
+                {{ end }}
+                
+                {{ if .NextInSection }}
+                <a href="{{ .NextInSection.RelPermalink }}" class="flex items-center text-primary-600 dark:text-primary-400 hover:underline ml-auto">
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Next Post</div>
+                        <div class="font-medium">{{ .NextInSection.Title }}</div>
+                    </div>
+                    <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                {{ end }}
+            </div>
+        </nav>
+    </article>
+
+    <!-- Related Posts -->
+    {{ $related := .Site.RegularPages.Related . | first 3 }}
+    {{ if $related }}
+    <div class="mt-16">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Related Posts</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {{ range $related }}
+            <article class="rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md transition-shadow p-6">
+                {{ if .Params.featured_image }}
+                <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" class="w-full h-48 object-cover rounded-lg mb-4">
+                {{ end }}
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <a href="{{ .RelPermalink }}" class="hover:text-primary-600 dark:hover:text-primary-400">
+                        {{ .Title }}
+                    </a>
+                </h4>
+                <p class="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-3">{{ .Summary | plainify | truncate 100 }}</p>
+                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+                    <span class="mx-2">•</span>
+                    <span>{{ .ReadingTime }} min read</span>
+                </div>
+            </article>
+            {{ end }}
+        </div>
+    </div>
+    {{ end }}
+</div>
+
+<!-- Fixed TOC for desktop -->
+{{ if and .Site.Params.toc (gt .WordCount 400) }}
+<div class="hidden xl:block fixed top-32 right-8 w-64">
+    <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-gray-200 dark:border-neutral-800 p-4">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Table of Contents</h4>
+        <nav class="toc">
+            {{ .TableOfContents }}
+        </nav>
+    </div>
+</div>
+{{ end }}
+{{ end }}

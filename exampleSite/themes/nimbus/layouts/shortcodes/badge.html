@@ -1,0 +1,21 @@
+{{ $type := .Get "type" | default (.Get 0) | default "default" }}
+{{ $label := .Get "label" | default (.Get 1) | default $type }}
+{{ $url := .Get "url" }}
+
+{{ $colors := dict
+  "kubernetes" "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+  "docker"     "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+  "terraform"  "bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+  "aws"        "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"
+  "gcp"        "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+  "azure"      "bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300"
+  "security"   "bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300"
+  "default"    "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
+}}
+{{ $class := index $colors $type | default (index $colors "default") }}
+
+{{ if $url }}
+<a href="{{ $url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium {{ $class }} hover:opacity-80 transition-opacity">{{ $label }}</a>
+{{ else }}
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium {{ $class }}">{{ $label }}</span>
+{{ end }}

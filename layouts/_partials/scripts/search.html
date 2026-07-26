@@ -1,0 +1,180 @@
+<!-- Lunr.js Search (vendored locally — no runtime CDN dependency) -->
+<script src="{{ "js/vendor/lunr.min.js" | relURL }}"></script>
+<script>
+(function() {
+    'use strict';
+
+    let searchIndex = null;
+    let documents = [];
+    let activeIndex = -1;
+
+    async function initSearch() {
+        try {
+            const response = await fetch('{{ "/index.json" | relURL }}');
+            const data = await response.json();
+            documents = data;
+
+            searchIndex = lunr(function() {
+                this.ref('uri');
+                this.field('title', { boost: 10 });
+                this.field('content');
+                this.field('tags', { boost: 5 });
+                this.field('categories', { boost: 5 });
+
+                // Disable stemming so wildcard prefix search (used below for
+                // type-ahead matching) lines up with how terms were indexed.
+                this.pipeline.remove(lunr.stemmer);
+                this.searchPipeline.remove(lunr.stemmer);
+
+                documents.forEach(function(doc) {
+                    this.add(doc);
+                }, this);
+            });
+
+        } catch (error) {
+            console.error('Error initializing search:', error);
+        }
+    }
+
+    function performSearch(query) {
+        if (!searchIndex || !query.trim()) {
+            return [];
+        }
+
+        try {
+            const results = searchIndex.search(query + '*');
+            return results.map(function(result) {
+                const doc = documents.find(d => d.uri === result.ref);
+                return { ...doc, score: result.score };
+            }).slice(0, 8);
+        } catch (error) {
+            try {
+                const results = searchIndex.search(query);
+                return results.map(function(result) {
+                    const doc = documents.find(d => d.uri === result.ref);
+                    return { ...doc, score: result.score };
+                }).slice(0, 8);
+            } catch (e2) {
+                return [];
+            }
+        }
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function highlightSearchTerms(text, query) {
+        if (!query.trim()) return text;
+        const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+        let out = text;
+        terms.forEach(function (term) {
+            if (term.length > 1) {
+                const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                out = out.replace(regex, '<mark class="bg-primary-100 text-primary-900 dark:bg-primary-900/50 dark:text-primary-200 rounded-sm">$1</mark>');
+            }
+        });
+        return out;
+    }
+
+    function setActive(idx) {
+        const items = document.querySelectorAll('#search-results .search-result');
+        items.forEach(function (el, i) {
+            el.classList.toggle('bg-gray-50', i === idx);
+            el.classList.toggle('dark:bg-neutral-800', i === idx);
+        });
+        activeIndex = idx;
+    }
+
+    function renderSearchResults(results, query) {
+        const resultsContainer = document.getElementById('search-results');
+        if (!resultsContainer) return;
+        activeIndex = -1;
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No results found</div>';
+            return;
+        }
+
+        const html = results.map(function(result) {
+            const title = highlightSearchTerms(escapeHtml(result.title || 'Untitled'), query);
+            const content = escapeHtml(result.content || '');
+            const snippet = content.length > 120 ? content.substring(0, 120) + '…' : content;
+            const highlightedSnippet = highlightSearchTerms(snippet, query);
+
+            return '<div class="search-result cursor-pointer px-4 py-3 border-b last:border-b-0 border-gray-100 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-url="' + result.uri + '">' +
+                '<div class="text-sm font-medium text-gray-900 dark:text-gray-100">' + title + '</div>' +
+                '<div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">' + highlightedSnippet + '</div>' +
+            '</div>';
+        }).join('');
+
+        resultsContainer.innerHTML = html;
+
+        resultsContainer.querySelectorAll('.search-result').forEach(function(result) {
+            result.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                if (url) window.location.href = url;
+            });
+            result.addEventListener('mouseenter', function () {
+                const items = Array.from(resultsContainer.querySelectorAll('.search-result'));
+                setActive(items.indexOf(result));
+            });
+        });
+    }
+
+    function handleSearchInput() {
+        const searchInput = document.getElementById('search-input');
+        if (!searchInput) return;
+
+        let debounceTimer;
+        searchInput.addEventListener('input', function() {
+            const query = this.value;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                const resultsEl = document.getElementById('search-results');
+                if (query.trim()) {
+                    const results = performSearch(query);
+                    renderSearchResults(results, query);
+                } else if (resultsEl) {
+                    resultsEl.innerHTML = '';
+                }
+            }, 200);
+        });
+
+        // Arrow-key navigation + Enter to open the highlighted result
+        searchInput.addEventListener('keydown', function(e) {
+            const items = document.querySelectorAll('#search-results .search-result');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setActive(Math.min(activeIndex + 1, items.length - 1));
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setActive(Math.max(activeIndex - 1, 0));
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const target = items[activeIndex >= 0 ? activeIndex : 0];
+                if (target) window.location.href = target.getAttribute('data-url');
+            }
+        });
+
+        // Close results when clicking outside
+        document.addEventListener('click', function (e) {
+            const resultsEl = document.getElementById('search-results');
+            if (!resultsEl) return;
+            if (!resultsEl.contains(e.target) && e.target !== searchInput) {
+                resultsEl.innerHTML = '';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initSearch();
+        handleSearchInput();
+    });
+
+})();
+</script>

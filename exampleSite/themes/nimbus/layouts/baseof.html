@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+    <script>
+      // Set theme before first paint to avoid a flash of the wrong theme.
+      // Falls back to system preference when the visitor has no saved choice.
+      (function () {
+        try {
+          var stored = localStorage.getItem("nimbus-theme");
+          var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+    {{ partial "head/meta.html" . }}
+    {{ partial "head/seo.html" . }}
+    {{ partial "head/favicon.html" . }}
+    {{ partial "head/styles.html" . }}
+    {{ partial "head/scripts.html" . }}
+</head>
+<body class="bg-white dark:bg-neutral-950 text-gray-900 dark:text-gray-100 transition-colors duration-200" data-copy-code-button="{{ .Site.Params.copyCodeButton | default true }}">
+    <div class="min-h-screen flex flex-col">
+        {{ partial "header.html" . }}
+        
+        <main class="flex-grow">
+            {{ block "main" . }}{{ end }}
+        </main>
+        
+        {{ partial "footer.html" . }}
+    </div>
+    
+    {{ partial "scripts/main.html" . }}
+    {{ if and .Site.Params.mermaid (strings.Contains .Content "class=\"mermaid") }}
+        {{ partial "scripts/mermaid.html" . }}
+    {{ end }}
+    {{ if .Site.Params.search }}
+        {{ partial "scripts/search.html" . }}
+    {{ end }}
+</body>
+</html>

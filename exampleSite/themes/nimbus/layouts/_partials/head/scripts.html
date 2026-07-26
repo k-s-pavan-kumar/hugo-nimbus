@@ -1,0 +1,12 @@
+<!--
+  Intentionally left free of <script> tags: main.js and the optional
+  Prism copy-to-clipboard scripts are loaded once, at the end of <body>,
+  via partials/scripts/main.html. Loading them here too previously caused
+  every script (including the 4 external Prism CDN files) to be fetched
+  and executed twice on every page.
+-->
+{{ if .Site.Params.performance.preconnect }}
+{{ range .Site.Params.performance.preconnect }}
+<link rel="preconnect" href="{{ . }}" crossorigin>
+{{ end }}
+{{ end }}

@@ -1,0 +1,29 @@
+<!-- TailwindCSS (pre-compiled via `npm run build-css`, see package.json —
+     Hugo only minifies/fingerprints the already-compiled output below; it
+     never invokes PostCSS/Node itself, so `hugo server`/`hugo build` has
+     no Node.js dependency at all once tailwind.built.css exists) -->
+{{ $tailwind := resources.Get "css/tailwind.built.css" }}
+{{ if not $tailwind }}
+  {{ errorf "assets/css/tailwind.built.css not found — run `npm install && npm run build-css` first (see exampleSite/README or docs/installation)." }}
+{{ end }}
+{{ if hugo.IsProduction }}
+  {{ $tailwind = $tailwind | resources.Minify | resources.Fingerprint }}
+{{ end }}
+<link rel="stylesheet" href="{{ $tailwind.RelPermalink }}" {{ if hugo.IsProduction }}integrity="{{ $tailwind.Data.Integrity }}"{{ end }}>
+
+<!-- Syntax Highlighting -->
+{{ if .Site.Params.highlight }}
+  {{ $style := .Site.Params.highlight.style | default "github" }}
+  {{ $syntax := resources.Get (printf "css/syntax-%s.css" $style) | resources.Minify }}
+  <link rel="stylesheet" href="{{ $syntax.RelPermalink }}">
+{{ end }}
+
+<!-- Custom CSS -->
+{{ $custom := resources.Get "css/custom.css" }}
+{{ if $custom }}
+  {{ if hugo.IsProduction }}
+    {{ $custom = $custom | resources.Minify | resources.Fingerprint }}
+  {{ end }}
+  <link rel="stylesheet" href="{{ $custom.RelPermalink }}" {{ if hugo.IsProduction }}integrity="{{ $custom.Data.Integrity }}"{{ end }}>
+{{ end }}
+

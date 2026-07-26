@@ -1,0 +1,48 @@
+{{ define "main" }}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Mobile: collapsible section nav -->
+  <details class="lg:hidden mb-6 rounded-lg border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900">
+    <summary class="px-4 py-3 font-medium text-sm text-gray-900 dark:text-white cursor-pointer flex items-center justify-between">
+      In this section
+      <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </summary>
+    <div class="px-3 pb-3">
+      {{ partial "docs-sidebar.html" . }}
+    </div>
+  </details>
+
+  <div class="lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+
+    <aside class="hidden lg:block">
+      <div class="sticky top-6">
+        {{ partial "docs-version-switcher.html" . }}
+        {{ partial "docs-sidebar.html" . }}
+      </div>
+    </aside>
+
+    <article class="min-w-0">
+      {{ if not (.Params.current | default true) }}
+      <div class="mb-6 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900 text-sm text-amber-800 dark:text-amber-300">
+        You're viewing an archived version of these docs. <a href="{{ "/docs/" | relURL }}" class="underline font-medium">Go to the current version &rarr;</a>
+      </div>
+      {{ end }}
+
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ .Title }}</h1>
+      <div class="prose prose-lg dark:prose-invert max-w-none mb-10">
+        {{ .Content }}
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        {{ range .Pages.ByWeight }}
+        <a href="{{ .RelPermalink }}" class="block rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 hover:shadow-md hover:border-primary-300 dark:hover:border-primary-700 transition-all">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{{ .LinkTitle }}</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{ .Params.description | default (.Summary | plainify | truncate 100) }}</p>
+        </a>
+        {{ end }}
+      </div>
+    </article>
+
+  </div>
+</div>
+{{ end }}

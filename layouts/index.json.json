@@ -1,0 +1,13 @@
+{{- $pages := where site.RegularPages "Kind" "page" -}}
+[
+{{- range $index, $page := $pages -}}
+  {{- if $index }},{{ end -}}
+  {
+    "uri": {{ $page.RelPermalink | jsonify }},
+    "title": {{ $page.Title | jsonify }},
+    "content": {{ $page.Plain | jsonify }},
+    "tags": {{ $page.Params.tags | default (slice) | jsonify }},
+    "categories": {{ $page.Params.categories | default (slice) | jsonify }}
+  }
+{{- end -}}
+]

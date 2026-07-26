@@ -1,0 +1,16 @@
+{{ $section := .CurrentSection }}
+{{ if $section }}
+<nav class="text-sm">
+  <ul class="space-y-1">
+    {{ range $section.Pages.ByWeight }}
+    {{ $isActive := eq $.RelPermalink .RelPermalink }}
+    <li>
+      <a href="{{ .RelPermalink }}"
+         class="block px-3 py-1.5 rounded-md transition-colors {{ if $isActive }}bg-primary-50 text-primary-700 font-medium dark:bg-primary-900/30 dark:text-primary-300{{ else }}text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100{{ end }}">
+        {{ .LinkTitle }}
+      </a>
+    </li>
+    {{ end }}
+  </ul>
+</nav>
+{{ end }}

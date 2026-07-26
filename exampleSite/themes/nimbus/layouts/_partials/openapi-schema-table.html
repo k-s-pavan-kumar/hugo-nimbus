@@ -1,0 +1,42 @@
+{{ $schema := .schema }}
+{{ $spec := .spec }}
+
+{{/* Resolve one level of "#/components/schemas/X" */}}
+{{ $ref := index $schema "$ref" }}
+{{ if $ref }}
+  {{ $parts := split $ref "/" }}
+  {{ $name := index $parts (sub (len $parts) 1) }}
+  {{ $resolved := index $spec.components.schemas $name }}
+  {{ if $resolved }}{{ $schema = $resolved }}{{ end }}
+{{ end }}
+
+{{ if $schema.properties }}
+<table class="w-full text-sm border-collapse my-3">
+  <thead>
+    <tr class="border-b border-gray-200 dark:border-neutral-800 text-left text-gray-500 dark:text-gray-400">
+      <th class="py-1.5 pr-4 font-medium">Field</th>
+      <th class="py-1.5 pr-4 font-medium">Type</th>
+      <th class="py-1.5 font-medium">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range $name, $prop := $schema.properties }}
+    {{ $required := false }}
+    {{ range $schema.required }}{{ if eq . $name }}{{ $required = true }}{{ end }}{{ end }}
+    <tr class="border-b border-gray-100 dark:border-neutral-900">
+      <td class="py-1.5 pr-4 font-mono text-gray-900 dark:text-gray-100">
+        {{ $name }}{{ if $required }}<span class="text-red-500">*</span>{{ end }}
+      </td>
+      <td class="py-1.5 pr-4 font-mono text-primary-600 dark:text-primary-400">
+        {{ if eq $prop.type "array" }}{{ $prop.items.type | default "object" }}[]{{ else }}{{ $prop.type | default "object" }}{{ end }}
+      </td>
+      <td class="py-1.5 text-gray-600 dark:text-gray-400">{{ $prop.description }}</td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+{{ else if $schema.type }}
+<p class="text-sm font-mono text-primary-600 dark:text-primary-400 my-2">
+  {{ if eq $schema.type "array" }}array of {{ $schema.items.type | default "object" }}{{ else }}{{ $schema.type }}{{ end }}
+</p>
+{{ end }}

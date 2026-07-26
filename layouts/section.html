@@ -1,0 +1,18 @@
+{{ define "main" }}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ .Title }}</h1>
+  {{ with .Content }}
+  <div class="prose dark:prose-invert max-w-none mb-8">{{ . }}</div>
+  {{ end }}
+  <div class="space-y-6">
+    {{ range .Pages }}
+    <article class="border-b border-gray-100 dark:border-neutral-900 pb-6">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        <a href="{{ .RelPermalink }}" class="hover:text-primary-600 dark:hover:text-primary-400">{{ .LinkTitle }}</a>
+      </h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">{{ .Summary | plainify | truncate 140 }}</p>
+    </article>
+    {{ end }}
+  </div>
+</div>
+{{ end }}
