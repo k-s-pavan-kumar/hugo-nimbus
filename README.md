@@ -1,11 +1,11 @@
-<img src="images/logo.svg" alt="Nimbus logo" width="64" height="64">
+<img src="https://raw.githubusercontent.com/k-s-pavan-kumar/hugo-nimbus/main/images/logo.svg" alt="Nimbus logo" width="64" height="64">
 
 # Nimbus
 
 A Tailwind CSS Hugo theme for DevOps knowledge hubs — blog posts, sidebar-navigation
 reference docs, and runbooks, all in one theme.
 
-![Nimbus screenshot](images/screenshot.png)
+![Nimbus screenshot](https://raw.githubusercontent.com/k-s-pavan-kumar/hugo-nimbus/main/images/screenshot.png)
 
 ## Features
 
@@ -45,7 +45,7 @@ reference docs, and runbooks, all in one theme.
 
 ```bash
 git clone https://github.com/k-s-pavan-kumar/hugo-nimbus.git
-cd hugo-theme-nimbus/exampleSite
+cd hugo-nimbus/exampleSite
 npm install
 hugo server -D
 ```
@@ -108,27 +108,48 @@ MIT — see [LICENSE](LICENSE).
 
 ## Submitting to the Hugo themes showcase
 
-The theme itself is technically ready (builds clean with and without npm,
-no console errors, has `theme.toml` + showcase-sized screenshots in
-`images/`). What's left is entirely repo/account setup that has to happen
-on your end:
+**Correction:** an earlier version of this README pointed at
+`gohugoio/hugoThemes` and described adding this repo as a git submodule
+there. That repo was archived in 2021 and is read-only. The current process
+lives at
+[`gohugoio/hugoThemesSiteBuilder`](https://github.com/gohugoio/hugoThemesSiteBuilder)
+and is much simpler — verified directly against that repo's own README
+rather than assumed:
 
-1. **Create the real GitHub repo** (convention: `hugo-theme-nimbus`), push
-   this code to it, and add the topic `hugo-theme` to the repo.
-2. **Replace every `your-org` placeholder** with your actual repo path:
+1. **Push a tagged release.** The showcase build picks up config/images
+   from your latest semver-tagged release (e.g. `v1.0.0`) if one exists,
+   falling back to the latest commit otherwise. A real tag is more
+   reliable:
    ```bash
-   grep -rl "your-org" --include="*.toml" --include="*.md" .
+   git tag v1.0.0
+   git push --tags
    ```
-   (`theme.toml`, `README.md`, and a few doc pages under `exampleSite/content/`)
-3. **Deploy the example site** — push to `main` with GitHub Pages enabled
-   (Settings → Pages → Source: GitHub Actions); the workflow at
-   `.github/workflows/hugo.yml` handles the rest. You'll need this live URL
-   for the submission.
-4. **Regenerate `images/screenshot.png` / `images/tn.png`** from your
-   deployed URL if you change the example content, so the showcase preview
-   matches what people actually see.
-5. Open a PR against [`gohugoio/hugoThemes`](https://github.com/gohugoio/hugoThemes)
-   adding this repo as a submodule, following their `CONTRIBUTING.md`.
+2. **Add the `hugo-theme` topic** to your repo (Settings → gear icon next
+   to About → Topics).
+3. **Fork and clone `hugoThemesSiteBuilder`:**
+   ```bash
+   git clone https://github.com/<you>/hugoThemesSiteBuilder.git
+   cd hugoThemesSiteBuilder
+   ```
+4. **Add one line to `themes.txt`** — your repo URL in lexicographical
+   order with the rest of the file, e.g.:
+   ```
+   github.com/k-s-pavan-kumar/hugo-nimbus
+   ```
+5. **Commit and open a PR:**
+   ```bash
+   git add themes.txt
+   git commit -m "Add theme hugo-nimbus"
+   git push
+   ```
+   Then open the PR against `gohugoio/hugoThemesSiteBuilder` and confirm
+   the Netlify deploy preview succeeds before asking for review.
+
+Requirements this repo already meets, per that README: `theme.toml` in the
+root with `demosite` set, root-level `hugo.toml` declaring supported Hugo
+versions, `images/screenshot.png` + `images/tn.png` at 3:2 aspect ratio
+(1500×1000 and 900×600 here), an OSI-approved LICENSE (MIT), and absolute
+(not relative) image URLs in this README.
 
 A few honest notes for whoever reviews this:
 
